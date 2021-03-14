@@ -1,109 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
+    <title>Rock Paper Scissors</title>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rock, Paper, Scissors</title>
   </head>
   <body>
-    <h1>Rock, Paper, Scissors</h1>
+    <button id="rock">Rock</button>
+    <button id="paper">Paper</button>
+    <button id="scissors">Scissors</button>
+    <div id="container">
+      <div id="player-score">0</div>
+      <div id="computer-score">0</div>
+    </div>
     <script>
-      // create three choices for game
-      const options = ["rock", "paper", "scissors"];
-      // create a computer play function that randomly chooses one option
-      function computerPlay() {
-        return options[Math.floor(Math.random() * 3)];
-      }
-      // create a player score and comp score;
-      let playerPoints;
-      let computerPoints;
-      // create a computer choice variable and player choice;
-      let playerChoice;
-      let computerChoice;
-      //game design
-      function game() {
-        computerPoints = 0;
-        playerPoints = 0;
-        for (let i = 0; i < 5; i++) {
-          onPlayersInput();
-        }
-        console.log(declareWinner());
-        function declareWinner() {
-          if (playerPoints === computerPoints) {
-            alert(playerPoints + "-" + computerPoints + "\nTie game!");
-            return playerPoints + "-" + computerPoints + "\nTie game!";
-          } else if (playerPoints > computerPoints) {
-            alert(playerPoints + "-" + computerPoints + "\nYou win!!");
-            return playerPoints + "-" + computerPoints + "\nYou win!!";
-          } else {
-            alert(
-              playerPoints +
-                "-" +
-                computerPoints +
-                "\nYou lost. Better luck next time!"
-            );
-            return (
-              playerPoints +
-              "-" +
-              computerPoints +
-              "\nYou lost. Better luck next time!"
-            );
+      let computerSelection;
+      let playerSelection;
+      let computerScore = 0;
+      let playerScore = 0;
+
+      let buttons = document.querySelectorAll("button");
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          playerSelection = button.innerText.toLowerCase();
+          playRound(playerSelection, computerSelection);
+
+          if (playerScore === 5 || computerScore === 5) {
+            declareWinner();
           }
-        }
+        });
+      });
+
+      const myArray = ["Rock", "Paper", "Scissors"];
+
+      function computerPlay() {
+        return myArray[~~(Math.random() * myArray.length)];
       }
-      //  set player choice variable equal to input
-      //verify that player inputs correct choice, regardless of uppercase
-      function onPlayersInput() {
-        playerChoice = prompt("Rock, Paper, or Scissors?", "");
-        if (
-          playerChoice.toLowerCase() == "rock" ||
-          playerChoice.toLowerCase() == "paper" ||
-          playerChoice.toLowerCase() == "scissors"
-        ) {
-          console.log(rps(playerChoice, computerChoice));
+
+      function declareWinner() {
+        if (playerScore === computerScore) {
+          alert(playerScore + "-" + computerScore + "\nTie game!");
+          displayResults(playerScore + "-" + computerScore + "\nTie game!");
+        } else if (playerScore > computerScore) {
+          alert(playerScore + "-" + computerScore + "\nYou win!!");
+          displayResults(playerScore + "-" + computerScore + "\nYou win!!");
         } else {
-          alert("That's not a valid choice.");
-          onPlayersInput();
+          alert(
+            playerScore +
+              "-" +
+              computerScore +
+              "\nYou lost. Better luck next time!"
+          );
+          displayResults(
+            playerScore +
+              "-" +
+              computerScore +
+              "\nYou lost. Better luck next time!"
+          );
         }
       }
-      //play one round
-      function rps(playerChoice, computerChoice) {
-        // create a comp choice and lower case it. then get a player choice.
-        computerChoice = computerPlay();
-        console.log("Player move: " + playerChoice);
-        console.log("Computer move: " + computerChoice);
-        playerChoice = playerChoice.toLowerCase();
-        // create rules for winning
-        if (computerChoice == playerChoice) {
+
+      function playRound(playerSelection, computerSelection) {
+        computerSelection = computerPlay().toLowerCase();
+        playerSelection = playerSelection.toLowerCase();
+        if (computerSelection == playerSelection) {
           alert("Tie game!");
-          return (
-            "Tie game\nComputer Score: " +
-            computerPoints +
-            "\nYour Score: " +
-            playerPoints
-          );
+          displayResults("Tie game!");
         } else if (
-          (computerChoice == "rock") & (playerChoice == "scissors") ||
-          (computerChoice == "paper") & (playerChoice == "rock") ||
-          (computerChoice == "scissors") & (playerChoice == "paper")
+          (computerSelection == "rock" && playerSelection == "scissors") ||
+          (computerSelection == "scissors" && playerSelection == "paper") ||
+          (computerSelection == "paper" && playerSelection == "rock")
         ) {
-          alert("You lose! " + computerChoice + " beats " + playerChoice);
-          return (
-            "Computer Score: " +
-            ++computerPoints +
-            "\nYour Score: " +
-            playerPoints
+          alert("You lose! " + computerSelection + " beats " + playerSelection);
+          computerScore = ++computerScore;
+          keepScore();
+          displayResults(
+            "You lose! " + computerSelection + " beats " + playerSelection
           );
         } else {
-          alert("You win! " + playerChoice + " beats " + computerChoice);
-          return (
-            "Your Score: " +
-            ++playerPoints +
-            "\nComputer Score: " +
-            computerPoints
+          alert("You win! " + playerSelection + " beats " + computerSelection);
+          playerScore = ++playerScore;
+          keepScore();
+          displayResults(
+            "You win! " + playerSelection + " beats " + computerSelection
           );
         }
+      }
+
+      function keepScore() {
+        let playerScoreBox = document.querySelector("#player-score");
+        let computerScoreBox = document.querySelector("#computer-score");
+
+        playerScoreBox.textContent = playerScore;
+        computerScoreBox.textContent = computerScore;
+      }
+
+      function displayResults(str) {
+        const container = document.querySelector("#container");
+        const p = document.createElement("p");
+
+        p.textContent = str;
+        container.appendChild(p);
       }
     </script>
   </body>
